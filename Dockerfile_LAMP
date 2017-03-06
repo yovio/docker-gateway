@@ -3,7 +3,7 @@ LABEL maintainer "Yovi Oktofianus <yovio@yahoo.com>"
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
-  apt-get -y install supervisor git apache2 libapache2-mod-php5 php5-mysql pwgen php-apc php5-mcrypt mariadb-server && \
+  apt-get -y install supervisor git pwgen mariadb-server apache2 php libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc && \
   echo "ServerName localhost" >> /etc/apache2/apache2.conf
   
   # Add image configuration and scripts
