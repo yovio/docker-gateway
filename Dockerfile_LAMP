@@ -1,0 +1,29 @@
+FROM ubuntu:16.04
+LABEL maintainer "Yovi Oktofianus <yovio@yahoo.com>"
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update && \
+  apt-get -y install supervisor git apache2 libapache2-mod-php5 php5-mysql pwgen php-apc php5-mcrypt mariadb-server && \
+  echo "ServerName localhost" >> /etc/apache2/apache2.conf
+  
+  # Add image configuration and scripts
+ADD start-apache2.sh /start-apache2.sh
+ADD start-mysqld.sh /start-mysqld.sh
+ADD run.sh /run.sh
+ADD create_mysql_admin_user.sh /create_mysql_admin_user.sh  
+ADD supervisord-apache2.conf /etc/supervisor/conf.d/supervisord-apache2.conf
+ADD supervisord-mysqld.conf /etc/supervisor/conf.d/supervisord-mysqld.conf
+
+RUN chmod 755 /*.sh
+
+# Remove pre-installed database
+RUN rm -rf /var/lib/mysql/*
+  
+#Environment variables to configure php
+ENV PHP_UPLOAD_MAX_FILESIZE 10M
+ENV PHP_POST_MAX_SIZE 10M
+  
+VOLUME  ["/etc/mysql", "/var/lib/mysql" ]
+
+EXPOSE 80 443
+CMD ["/run.sh"]
