@@ -26,8 +26,11 @@ RUN a2enmod rewrite
 #Environment variables to configure php
 ENV PHP_UPLOAD_MAX_FILESIZE 10M
 ENV PHP_POST_MAX_SIZE 10M
+
+#password for Wordpress db
+ENV WP_DB_PASS Password
   
 VOLUME  ["/etc/mysql", "/var/lib/mysql" ]
 
 EXPOSE 80 443
-CMD ["/run.sh"]
+CMD ["/script/run.sh"]

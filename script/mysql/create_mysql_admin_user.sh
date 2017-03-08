@@ -10,11 +10,6 @@ while [[ RET -ne 0 ]]; do
     RET=$?
 done
 
-if [ ! -z "$MYSQL_PASS" ]; then	
-	echo "Please provide $MYSQL_PASS as environment variable."
-	exit 1
-fi
-
 PASS=${MYSQL_PASS:-$(pwgen -s 12 1)}
 _word=$( [ ${MYSQL_PASS} ] && echo "preset" || echo "random" )
 echo "=> Creating MySQL admin user with ${_word} password"
