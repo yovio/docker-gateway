@@ -18,17 +18,17 @@ RUN cp /script/apache/apache_default /etc/apache2/sites-available/000-default.co
 
 # Remove pre-installed database
 RUN rm -rf /var/lib/mysql/*
-
-RUN /script/wordpress/deploy_wordpress.sh
-
 RUN a2enmod rewrite
+
+#password for Wordpress db
+ENV WP_DB_PASS Password
+RUN /script/wordpress/deploy_wordpress.sh
   
 #Environment variables to configure php
 ENV PHP_UPLOAD_MAX_FILESIZE 10M
 ENV PHP_POST_MAX_SIZE 10M
 
-#password for Wordpress db
-ENV WP_DB_PASS Password
+
   
 VOLUME  ["/etc/mysql", "/var/lib/mysql" ]
 
