@@ -10,6 +10,11 @@ while [[ RET -ne 0 ]]; do
     RET=$?
 done
 
+if [ ! -z "$MYSQL_PASS" ]; then	
+	echo "Please provide $MYSQL_PASS as environment variable."
+	exit 1
+fi
+
 PASS=${MYSQL_PASS:-$(pwgen -s 12 1)}
 _word=$( [ ${MYSQL_PASS} ] && echo "preset" || echo "random" )
 echo "=> Creating MySQL admin user with ${_word} password"
@@ -20,6 +25,11 @@ mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION"
 # You can create a /mysql-setup.sh file to intialized the DB
 if [ -f /mysql-setup.sh ] ; then
   . /mysql-setup.sh
+fi
+
+#setup wordpress db
+if [ -f /script/wordpress/setup_wordpress_db.sh ] ; then
+  . /script/wordpress/setup_wordpress_db.sh
 fi
 
 echo "=> Done!"

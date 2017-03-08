@@ -3,22 +3,23 @@ LABEL maintainer "Yovi Oktofianus <yovio@yahoo.com>"
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
-  apt-get -y install supervisor git pwgen mariadb-server apache2 php libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc && \
+  apt-get -y install supervisor git pwgen mariadb-server curl apache2 && \
+  apt-get -y install php libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc && \
   echo "ServerName localhost" >> /etc/apache2/apache2.conf
   
-  # Add image configuration and scripts
-ADD start-apache2.sh /start-apache2.sh
-ADD start-mysqld.sh /start-mysqld.sh
-ADD run.sh /run.sh
-ADD create_mysql_admin_user.sh /create_mysql_admin_user.sh  
-ADD supervisord-apache2.conf /etc/supervisor/conf.d/supervisord-apache2.conf
-ADD supervisord-mysqld.conf /etc/supervisor/conf.d/supervisord-mysqld.conf
-ADD apache_default /etc/apache2/sites-available/000-default.conf
+  
+# Add image configuration and scripts
+COPY script /tmp/script
 
-RUN chmod 755 /*.sh
+RUN find /tmp/script -type f -name "*.sh" -exec chmod 755 {} \;
+RUN cp /tmp/script/apache/supervisord-apache2.conf /etc/supervisor/conf.d/supervisord-apache2.conf
+RUN cp /tmp/script/mysql/supervisord-mysqld.conf /etc/supervisor/conf.d/supervisord-mysqld.conf
+RUN cp /tmp/script/apache/apache_default /etc/apache2/sites-available/000-default.conf
 
 # Remove pre-installed database
 RUN rm -rf /var/lib/mysql/*
+
+RUN /tmp/script/wordpress/deploy_wordpress.sh
 
 RUN a2enmod rewrite
   
