@@ -9,17 +9,17 @@ RUN apt-get update && \
   
   
 # Add image configuration and scripts
-COPY script /tmp/script
+COPY script /script
 
-RUN find /tmp/script -type f -name "*.sh" -exec chmod 755 {} \;
-RUN cp /tmp/script/apache/supervisord-apache2.conf /etc/supervisor/conf.d/supervisord-apache2.conf
-RUN cp /tmp/script/mysql/supervisord-mysqld.conf /etc/supervisor/conf.d/supervisord-mysqld.conf
-RUN cp /tmp/script/apache/apache_default /etc/apache2/sites-available/000-default.conf
+RUN find /script -type f -name "*.sh" -exec chmod 755 {} \;
+RUN cp /script/apache/supervisord-apache2.conf /etc/supervisor/conf.d/supervisord-apache2.conf
+RUN cp /script/mysql/supervisord-mysqld.conf /etc/supervisor/conf.d/supervisord-mysqld.conf
+RUN cp /script/apache/apache_default /etc/apache2/sites-available/000-default.conf
 
 # Remove pre-installed database
 RUN rm -rf /var/lib/mysql/*
 
-RUN /tmp/script/wordpress/deploy_wordpress.sh
+RUN /script/wordpress/deploy_wordpress.sh
 
 RUN a2enmod rewrite
   
