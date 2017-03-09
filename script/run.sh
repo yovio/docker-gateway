@@ -15,4 +15,6 @@ else
 fi
 
 service gateone start
+service guacd start
+service tomcat8 start
 exec supervisord -n
