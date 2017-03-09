@@ -33,5 +33,6 @@ RUN /script/gateone/deploy_gateone.sh
   
 VOLUME  ["/etc/mysql", "/var/lib/mysql" ]
 
-EXPOSE 80 443
+# 8080 for guacamole, 8081 for gateone, 8082 for wordpress
+EXPOSE 8080, 8081, 8082
 CMD ["/script/run.sh"]
