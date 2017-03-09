@@ -14,4 +14,5 @@ else
     echo "=> Using an existing volume of MySQL"
 fi
 
+service gateone start
 exec supervisord -n

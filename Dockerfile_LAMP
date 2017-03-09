@@ -4,7 +4,10 @@ LABEL maintainer "Yovi Oktofianus <yovio@yahoo.com>"
 ENV DEBIAN_FRONTEND noninteractive
 
 #password for Wordpress db
-ENV WP_DB_PASS Password 
+ENV WP_DB_PASS Password
+
+#password for Guacamole db
+ENV GUACAMOLE_DB_PASS Password
 
 #Environment variables to configure php
 ENV PHP_UPLOAD_MAX_FILESIZE 10M
@@ -26,10 +29,16 @@ RUN cp /script/apache/apache_default /etc/apache2/sites-available/000-default.co
 
 # Remove pre-installed database
 RUN rm -rf /var/lib/mysql/*
+
+# Enable apache rewrite module
 RUN a2enmod rewrite
+
+# apache listen on port 8082
+RUN sed -i "s/Listen 80/Listen 8082/g" /etc/apache2/ports.conf
 
 RUN /script/wordpress/deploy_wordpress.sh
 RUN /script/gateone/deploy_gateone.sh
+RUN /script/guacamole/deploy_guacamole.sh
   
 VOLUME  ["/etc/mysql", "/var/lib/mysql" ]
 

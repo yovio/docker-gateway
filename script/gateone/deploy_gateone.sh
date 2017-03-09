@@ -6,6 +6,5 @@ pip install tornado stdeb
 
 dpkg -i /script/gateone/gateone*.deb
 
-cp /script/gateone/*.conf /etc/gateone/conf.d
-
-service gateone restart
+mkdir -p /etc/gateone/conf.d
+cp /script/gateone/*.conf /etc/gateone/conf.d/
