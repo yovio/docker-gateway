@@ -2,6 +2,14 @@ FROM ubuntu:16.04
 LABEL maintainer "Yovi Oktofianus <yovio@yahoo.com>"
 
 ENV DEBIAN_FRONTEND noninteractive
+
+#password for Wordpress db
+ENV WP_DB_PASS Password 
+
+#Environment variables to configure php
+ENV PHP_UPLOAD_MAX_FILESIZE 10M
+ENV PHP_POST_MAX_SIZE 10M
+
 RUN apt-get update && \
   apt-get -y install supervisor git pwgen mariadb-server curl apache2 && \
   apt-get -y install php libapache2-mod-php php-mcrypt php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc && \
@@ -20,15 +28,8 @@ RUN cp /script/apache/apache_default /etc/apache2/sites-available/000-default.co
 RUN rm -rf /var/lib/mysql/*
 RUN a2enmod rewrite
 
-#password for Wordpress db
-ENV WP_DB_PASS Password
 RUN /script/wordpress/deploy_wordpress.sh
-  
-#Environment variables to configure php
-ENV PHP_UPLOAD_MAX_FILESIZE 10M
-ENV PHP_POST_MAX_SIZE 10M
-
-
+RUN /script/gateone/deploy_gateone.sh
   
 VOLUME  ["/etc/mysql", "/var/lib/mysql" ]
 
