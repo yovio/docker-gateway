@@ -20,3 +20,5 @@ sed -i "s/username_here/wordpressuser/g" /var/www/html/wp-config.php
 sed -i "s/password_here/$WP_DB_PASS/g" /var/www/html/wp-config.php
 
 rm /var/www/html/index.html
+
+chown -Rf www-data.www-data /var/www/html/
