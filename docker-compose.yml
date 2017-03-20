@@ -1,32 +1,67 @@
 version: "2"
 services:
-  gateway:
-    container_name: gateway
-    image: yovio/docker-gateway:LAMP    
-    ports:
-     - "8080:8080"
-     - "8081:8081"
-     - "8082:8082"
+  mariadb:
+    container_name: mariadb
+    image: mariadb
     volumes:
      - /docker-data/mysql/data:/var/lib/mysql # Location of MariaDB/Mysql data files
     restart: always
-    cap_add: SYS_PTRACE
+  guacd:
+    container_name: guacd
+    image: guacamole/guacd
+    restart: always
+  guacamole:
+    container_name: guacamole
+    image: guacamole/guacamole  
+    depends_on:
+     - guacd
+     - mariadb
+    links:
+     - guacd
+     - mariadb
+    environment:
+     MYSQL_HOSTNAME: mariadb
+     MYSQL_PORT: 3306
+     MYSQL_DATABASE: guacamole
+     MYSQL_USER: guacamole_user
+     MYSQL_PASSWORD: Password
+     GUACD_HOSTNAME: guacd
+    restart: always
+  wordpress:
+    container_name: wordpress
+    image: wordpress
+    depends_on:
+     - mariadb
+    restart: always
+    links:
+     - mariadb
+    environment:
+     WORDPRESS_DB_HOST: mariadb:3306
+     WORDPRESS_DB_USER: wordpressuser
+     WORDPRESS_DB_PASSWORD: Password
+    volumes:
+     - /docker-data/wp-content:/var/www/html/wp-content # Location of wordpress content files
   gateone:
+    container_name: gateone
     image: liftoff/gateone
-    ports:
-     - "8000:8000"
-    command: sh -c 'sed -i "s/\"disable_ssl\": false/\"disable_ssl\": true/g" /etc/gateone/conf.d/10server.conf && /usr/local/bin/update_and_run_gateone --log_file_prefix=/gateone/logs/gateone.log'
-  # agent section
-  datadog:
+    volumes:
+     - /docker-data/gateone/10server.conf:/etc/gateone/conf.d/10server.conf.new:ro
+    command: sh -c 'cp /etc/gateone/conf.d/10server.conf.new /etc/gateone/conf.d/10server.conf && /usr/local/bin/update_and_run_gateone --log_file_prefix=/gateone/logs/gateone.log'
+  nginx:
     container_name: nginx
     image: nginx
+    depends_on:
+       - wordpress
+       - gateone
+       - guacamole
     ports:
      - "80:80"
-     - "443:443"     
+     - "443:443"
     links:
-     - gateway
      - gateone
+     - wordpress
+     - guacamole
     volumes:
      - /docker-data/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-     - /docker-data/nginx/ssl:/etc/nginx/ssl:ro     
+     - /docker-data/nginx/ssl:/etc/nginx/ssl:ro
     restart: always
