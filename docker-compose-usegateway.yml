@@ -1,0 +1,38 @@
+version: "2"
+services:
+  gateway:
+    container_name: gateway
+    image: yovio/docker-gateway:LAMP
+    ports:
+     - "8080:8080"
+     - "8081:8081"
+     - "8082:8082"
+    volumes:
+     - /docker-data/mysql/data:/var/lib/mysql # Location of MariaDB/Mysql data files
+     - /docker-data/wp-content:/var/www/html/wp-content # Location of wordpress content files
+    restart: always
+    cap_add:
+     - SYS_PTRACE
+                                                                                                                                                                                                                                                                     
+  gateone:
+    container_name: gateone
+    image: liftoff/gateone
+    ports:
+     - "8000:8000"
+    volumes:
+     - /docker-data/gateone/10server.conf:/etc/gateone/conf.d/10server.conf.new:ro
+    command: sh -c 'cp /etc/gateone/conf.d/10server.conf.new /etc/gateone/conf.d/10server.conf && /usr/local/bin/update_and_run_gateone --log_file_prefix=/gateone/logs/gateone.log'
+                                                                                                                                                                                                                                                                     
+  nginx:
+    container_name: nginx
+    image: nginx
+    ports:
+     - "80:80"
+     - "443:443"
+    links:
+     - gateway
+     - gateone
+    volumes:
+     - /docker-data/nginx/nginx.conf.usegateway:/etc/nginx/nginx.conf:ro
+     - /docker-data/nginx/ssl:/etc/nginx/ssl:ro
+    restart: always
