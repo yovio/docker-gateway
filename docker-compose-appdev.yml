@@ -1,0 +1,15 @@
+version: "2"
+services:  
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    networks:
+      - inside
+    env_file:
+     - /docker-data/env-files/grafana.env
+    restart: always
+
+networks:
+  inside:
+    external:
+      name: bridge-inside
