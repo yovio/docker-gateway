@@ -1,0 +1,23 @@
+version: "2"
+services:  
+  nginx:
+    container_name: nginx
+    image: nginx    
+    ports:
+     - "80:80"
+     - "443:443"
+    networks:
+      - inside
+      - outside 
+    volumes:
+     - /docker-data/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+     - /docker-data/nginx/ssl:/etc/nginx/ssl:ro
+    restart: always
+
+networks:
+  inside:
+    external:
+      name: bridge-inside
+  outside:
+    external:
+      name: bridge-outside

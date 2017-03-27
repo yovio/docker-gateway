@@ -1,13 +1,5 @@
 version: "2"
 services:
-  mariadb:
-    container_name: mariadb
-    image: mariadb
-    networks:
-      - inside
-    volumes:
-     - /docker-data/mysql/data:/var/lib/mysql # Location of MariaDB/Mysql data files
-    restart: always
   guacd:
     container_name: guacd
     image: guacamole/guacd
@@ -19,7 +11,6 @@ services:
     image: guacamole/guacamole  
     depends_on:
      - guacd
-     - mariadb
     networks:
       - inside
     env_file:
@@ -28,8 +19,6 @@ services:
   wordpress:
     container_name: wordpress
     image: wordpress
-    depends_on:
-     - mariadb
     restart: always
     networks:
       - inside
@@ -45,28 +34,8 @@ services:
     volumes:
      - /docker-data/gateone/10server.conf:/etc/gateone/conf.d/10server.conf.new:ro
     command: sh -c 'cp /etc/gateone/conf.d/10server.conf.new /etc/gateone/conf.d/10server.conf && /usr/local/bin/update_and_run_gateone --log_file_prefix=/gateone/logs/gateone.log'
-  nginx:
-    container_name: nginx
-    image: nginx
-    depends_on:
-       - wordpress
-       - gateone
-       - guacamole
-    ports:
-     - "80:80"
-     - "443:443"
-    networks:
-      - inside
-      - outside 
-    volumes:
-     - /docker-data/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-     - /docker-data/nginx/ssl:/etc/nginx/ssl:ro
-    restart: always
 
 networks:
   inside:
     external:
       name: bridge-inside
-  outside:
-    external:
-      name: bridge-outside

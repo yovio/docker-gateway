@@ -1,0 +1,23 @@
+version: "2"
+services:
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    networks:
+      - inside
+    volumes:
+     - /docker-data/mysql/data:/var/lib/mysql # Location of MariaDB/Mysql data files
+    restart: always
+  influxdb:
+    container_name: influxdb
+    image: influxdb
+    networks:
+      - inside
+    volumes:
+     - /docker-data/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro # Location of influxdb conf file
+    restart: always
+	
+networks:
+  inside:
+    external:
+      name: bridge-inside
