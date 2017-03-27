@@ -19,13 +19,8 @@ services:
     links:
      - guacd
      - mariadb
-    environment:
-     MYSQL_HOSTNAME: mariadb
-     MYSQL_PORT: 3306
-     MYSQL_DATABASE: guacamole
-     MYSQL_USER: guacamole_user
-     MYSQL_PASSWORD: Password
-     GUACD_HOSTNAME: guacd
+    env_file:
+     - /docker-data/env-files/guacamole.env
     restart: always
   wordpress:
     container_name: wordpress
