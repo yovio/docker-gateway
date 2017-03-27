@@ -16,7 +16,7 @@ services:
     volumes:
      - /docker-data/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro # Location of influxdb conf file
     restart: always
-	
+
 networks:
   inside:
     external:
