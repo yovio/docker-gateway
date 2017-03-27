@@ -65,9 +65,9 @@ services:
 
 networks:
   inside:
-    internal: true
-    external: true
-      name: bridge-inside
+    internal:true
+    external:true
+      name:bridge-inside
   outside:    
-    external: true
-      name: bridge-outside
+    external:true
+      name:bridge-outside
