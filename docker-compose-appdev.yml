@@ -13,7 +13,7 @@ services:
     
   cadvisor:
     image: google/cadvisor
-    container_name:cadvisor
+    container_name: cadvisor
     networks:
      - inside
     command: -storage_driver=influxdb -storage_driver_db=cadvisor -storage_driver_host=influxdb:8086
