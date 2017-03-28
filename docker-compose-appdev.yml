@@ -8,23 +8,9 @@ services:
     env_file:
      - /docker-data/env-files/grafana.env
     volumes:
-     - /docker-data/grafana/plugins:/var/lib/grafana/plugins # Location of influxdb conf file
+     - /docker-data/grafana:/var/lib/grafana # Location of grafana data
     restart: always
     
-  cadvisor:
-    image: google/cadvisor
-    container_name: cadvisor
-    networks:
-     - inside
-    command: -storage_driver=influxdb -storage_driver_db=cadvisor -storage_driver_host=influxdb:8086
-    restart: always
-    ports:
-     - "8080:8080"
-    volumes:
-     - /:/rootfs:ro
-     - /var/run:/var/run:rw
-     - /sys:/sys:ro
-     - /var/lib/docker/:/var/lib/docker:ro
 
 networks:
   inside:
