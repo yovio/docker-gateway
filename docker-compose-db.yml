@@ -10,11 +10,12 @@ services:
     restart: always
   influxdb:
     container_name: influxdb
-    image: influxdb
+    image: influxdb:alpine
     networks:
       - inside
     volumes:
      - /docker-data/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro # Location of influxdb conf file
+     - /docker-data/influxdb/data:/var/lib/influxdb
     restart: always
 
 networks:
