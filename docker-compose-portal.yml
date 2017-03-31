@@ -29,6 +29,7 @@ services:
   gateone:
     container_name: gateone
     image: liftoff/gateone
+    restart: always
     networks:
       - inside
     volumes:
