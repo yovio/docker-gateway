@@ -13,15 +13,25 @@ services:
      - guacd
     networks:
       - inside
+    environment:
+      - VIRTUAL_PORT=8080
+      - VIRTUAL_HOST=rdp.yovi.info
+      - LETSENCRYPT_HOST=rdp.yovi.info
+      - LETSENCRYPT_EMAIL=yovio@hotmail.com
     env_file:
      - /docker-data/env-files/guacamole.env
     restart: always
+    command: sh -c 'cd /usr/local/tomcat/webapps && rm -rf ROOT/ && ln -s guacamole.war ROOT.war && /opt/guacamole/bin/start.sh'
   wordpress:
     container_name: wordpress
     image: wordpress
     restart: always
     networks:
       - inside
+    environment:      
+      - VIRTUAL_HOST=blog.yovi.info      
+      - LETSENCRYPT_HOST=blog.yovi.info
+      - LETSENCRYPT_EMAIL=yovio@hotmail.com
     env_file:
      - /docker-data/env-files/wordpress.env
     volumes:
@@ -32,6 +42,10 @@ services:
     restart: always
     networks:
       - inside
+    environment:      
+      - VIRTUAL_HOST=ssh.yovi.info      
+      - LETSENCRYPT_HOST=ssh.yovi.info
+      - LETSENCRYPT_EMAIL=yovio@hotmail.com
     volumes:
      - /docker-data/gateone/10server.conf:/etc/gateone/conf.d/10server.conf.new:ro
     command: sh -c 'cp /etc/gateone/conf.d/10server.conf.new /etc/gateone/conf.d/10server.conf && /usr/local/bin/update_and_run_gateone --log_file_prefix=/gateone/logs/gateone.log'

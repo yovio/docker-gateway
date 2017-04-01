@@ -5,12 +5,34 @@ services:
     image: grafana/grafana
     networks:
       - inside
+    environment:
+      - VIRTUAL_PORT=3000
+      - VIRTUAL_HOST=grafana.yovi.info
+      - LETSENCRYPT_HOST=grafana.yovi.info
+      - LETSENCRYPT_EMAIL=yovio@hotmail.com
     env_file:
      - /docker-data/env-files/grafana.env
     volumes:
      - /docker-data/grafana:/var/lib/grafana # Location of grafana data
     restart: always
-    
+
+  webhook:
+    container_name: webhook
+    image: yovio/docker-webhook
+    networks:
+      - inside
+    expose:
+     - 8555
+    environment:
+      - VIRTUAL_PORT=8555
+      - VIRTUAL_HOST=docker-webhook.yovi.info
+      - LETSENCRYPT_HOST=docker-webhook.yovi.info
+      - LETSENCRYPT_EMAIL=yovio@hotmail.com    
+    volumes:
+     - /docker-data/webhook/scripts:/dockerpuller/scripts
+     - /docker-data/webhook/config.json:/dockerpuller/config.json:ro
+     - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
 
 networks:
   inside:
