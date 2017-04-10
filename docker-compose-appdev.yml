@@ -16,6 +16,23 @@ services:
      - /docker-data/grafana:/var/lib/grafana # Location of grafana data
     restart: always
 
+  rabbitmq:
+    container_name:  rabbitmq
+    image: rabbitmq:management-alpine
+    networks:
+      - inside
+    ports:
+      - "15672:15672"
+      - "4369:4369"
+      - "5671:5671"
+      - "5672:5672"
+      - "25672:25672"
+    env_file:
+     - /docker-data/env-files/rabbitmq.env
+    volumes:
+     - /docker-data/rabbitmq:/var/lib/rabbitmq # Location of rabbitmq data
+    restart: always
+    
   webhook:
     container_name: webhook
     image: yovio/docker-webhook
