@@ -17,7 +17,7 @@ services:
     restart: always
 
   rabbitmq:
-    container_name:  rabbitmq
+    container_name: rabbitmq
     image: rabbitmq:management-alpine
     networks:
       - inside
@@ -32,7 +32,20 @@ services:
     volumes:
      - /docker-data/rabbitmq:/var/lib/rabbitmq # Location of rabbitmq data
     restart: always
-    
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+    networks:
+      - inside
+    ports:
+      - "6379:6379"
+    volumes:
+     - /docker-data/redis/data:/data # Location of redis data
+     - /docker-data/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    restart: always
+    command: sh -c 'redis-server /usr/local/etc/redis/redis.conf'
+
   webhook:
     container_name: webhook
     image: yovio/docker-webhook
