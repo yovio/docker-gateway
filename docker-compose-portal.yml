@@ -9,8 +9,9 @@ services:
   guacamole:
     container_name: guacamole
     image: guacamole/guacamole  
-    depends_on:
+    external_links:
      - guacd
+     - letsencrypt-nginx
     networks:
       - inside
     environment:
@@ -21,13 +22,16 @@ services:
     env_file:
      - /docker-data/env-files/guacamole.env
     restart: always
-    command: sh -c 'cd /usr/local/tomcat/webapps && rm -rf ROOT/ && ln -s guacamole.war ROOT.war && /opt/guacamole/bin/start.sh'
+    command: sh -c 'cd /usr/local/tomcat/webapps && rm -rf ROOT/ && ln -sf guacamole.war ROOT.war && /opt/guacamole/bin/start.sh'
   wordpress:
     container_name: wordpress
     image: wordpress
     restart: always
     networks:
       - inside
+    external_links:
+     - mariadb
+     - letsencrypt-nginx
     environment:      
       - VIRTUAL_HOST=blog.yovi.info      
       - LETSENCRYPT_HOST=blog.yovi.info
@@ -42,6 +46,8 @@ services:
     restart: always
     networks:
       - inside
+    external_links:
+     - letsencrypt-nginx
     environment:      
       - VIRTUAL_HOST=ssh.yovi.info      
       - LETSENCRYPT_HOST=ssh.yovi.info

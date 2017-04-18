@@ -5,6 +5,8 @@ services:
     image: grafana/grafana
     networks:
       - inside
+    external_links:
+     - letsencrypt-nginx
     environment:
       - VIRTUAL_PORT=3000
       - VIRTUAL_HOST=grafana.yovi.info
@@ -21,6 +23,8 @@ services:
     image: rabbitmq:management-alpine
     networks:
       - inside
+    external_links:
+     - letsencrypt-nginx
     ports:
       - "15672:15672"
       - "4369:4369"
@@ -38,6 +42,8 @@ services:
     image: redis:alpine
     networks:
       - inside
+    external_links:
+     - letsencrypt-nginx
     ports:
       - "6379:6379"
     volumes:
@@ -51,6 +57,8 @@ services:
     image: yovio/docker-webhook
     networks:
       - inside
+    external_links:
+     - letsencrypt-nginx
     expose:
      - 8555
     environment:

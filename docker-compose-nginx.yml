@@ -15,11 +15,13 @@ services:
      - "/var/run/docker.sock:/tmp/docker.sock:ro"
     restart: always
 
-  letsencrypt-nginx-proxy-companion:
+  letsencrypt-nginx:
    image: jrcs/letsencrypt-nginx-proxy-companion
-   container_name: letsencrypt-nginx-proxy-companion
+   container_name: letsencrypt-nginx
    networks:
       - bridge-inside
+   depends_on:
+     - nginx
    volumes_from:
      - nginx
    volumes:
