@@ -65,11 +65,31 @@ services:
       - VIRTUAL_PORT=8555
       - VIRTUAL_HOST=docker-webhook.yovi.info
       - LETSENCRYPT_HOST=docker-webhook.yovi.info
-      - LETSENCRYPT_EMAIL=yovio@hotmail.com    
+      - LETSENCRYPT_EMAIL=yovio@hotmail.com
     volumes:
      - /docker-data/webhook/scripts:/dockerpuller/scripts
      - /docker-data/webhook/config.json:/dockerpuller/config.json:ro
      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    
+  nodered:
+    container_name: nodered
+    image: nodered/node-red-docker:slim
+    networks:
+      - inside
+    external_links:
+     - letsencrypt-nginx
+    expose:
+     - 1880
+    environment:
+      - VIRTUAL_PORT=1880
+      - VIRTUAL_HOST=nodered.yovi.info
+      - LETSENCRYPT_HOST=nodered.yovi.info
+      - LETSENCRYPT_EMAIL=yovio@hotmail.com
+    env_file:
+     - /docker-data/env-files/nodered.env
+    volumes:
+     - /docker-data/nodered/data:/data     
     restart: always
 
 networks:
