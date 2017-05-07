@@ -1,0 +1,64 @@
+version: "2"
+services:  
+  gateone:
+    container_name: gateone
+    image: liftoff/gateone
+    restart: always
+    networks:
+      - bridge-inside
+    external_links:
+     - letsencrypt-nginx
+    environment:
+      - VIRTUAL_HOST=ssh.home.yovi.info
+      - VIRTUAL_PORT=8000
+      - LETSENCRYPT_HOST=ssh.home.yovi.info
+      - LETSENCRYPT_EMAIL=yovio@hotmail.com
+    expose:
+      - "8000"
+    volumes:
+     - /docker-data/gateone/10server.conf:/etc/gateone/conf.d/10server.conf.new:ro
+     - /docker-data/gateone/60docker.conf:/etc/gateone/conf.d/60docker.conf:ro
+    command: sh -c 'cp /etc/gateone/conf.d/10server.conf.new /etc/gateone/conf.d/10server.conf && /usr/local/bin/update_and_run_gateone --log_file_prefix=/gateone/logs/gateone.log'
+
+  sgdrone:
+    container_name: sgdrone
+    image: alpine
+    restart: always
+    networks:
+      - bridge-inside
+    external_links:
+     - letsencrypt-nginx
+    environment:
+      - VIRTUAL_HOST=www.sgdrone.com
+      - VIRTUAL_PORT=80
+      - REAL_IP=192.168.0.11
+      - LETSENCRYPT_HOST=www.sgdrone.com
+      - LETSENCRYPT_EMAIL=yovio@hotmail.com
+    tty: true
+    expose:
+      - "80"
+    command: /bin/ash
+
+  yoviinfo:
+    container_name: yoviinfo
+    image: alpine
+    restart: always
+    networks:
+      - bridge-inside
+    external_links:
+     - letsencrypt-nginx
+    environment:
+      - VIRTUAL_HOST=www.yovi.info
+      - VIRTUAL_PORT=80
+      - REAL_IP=192.168.0.11
+      - LETSENCRYPT_HOST=www.yovi.info
+      - LETSENCRYPT_EMAIL=yovio@hotmail.com
+    tty: true
+    expose:
+      - "80"
+    command: /bin/ash
+
+networks:
+  bridge-inside:
+    external:
+      name: bridge-inside

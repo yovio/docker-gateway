@@ -1,0 +1,37 @@
+version: "2"
+services:  
+  nginx:
+    container_name: nginx
+    image: jwilder/nginx-proxy:alpine
+    ports:
+     - "80:80"
+     - "443:443"
+    networks:
+      - bridge-inside
+    volumes:
+     - "/docker-data/nginx:/etc/nginx/conf.d"
+     - "/etc/nginx/vhost.d"
+     - "/usr/share/nginx/html"
+     - "/docker-data/nginx/certs:/etc/nginx/certs:ro"
+     - "/var/run/docker.sock:/tmp/docker.sock:ro"
+     - "/docker-data/nginx/nginx.tmpl:/app/nginx.tmpl"
+    restart: always
+
+  letsencrypt-nginx:
+   image: jrcs/letsencrypt-nginx-proxy-companion
+   container_name: letsencrypt-nginx
+   networks:
+      - bridge-inside
+   depends_on:
+     - nginx
+   volumes_from:
+     - nginx
+   volumes:
+     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+     - "/docker-data/nginx/certs:/etc/nginx/certs:rw"
+   restart: always
+
+networks:
+  bridge-inside:
+    external:
+      name: bridge-inside
