@@ -20,6 +20,25 @@ services:
      - /docker-data/gateone/60docker.conf:/etc/gateone/conf.d/60docker.conf:ro
     command: sh -c 'cp /etc/gateone/conf.d/10server.conf.new /etc/gateone/conf.d/10server.conf && /usr/local/bin/update_and_run_gateone --log_file_prefix=/gateone/logs/gateone.log'
 
+  portainer:
+    container_name: portainer
+    image: portainer/portainer
+    restart: always
+    networks:
+      - bridge-inside
+    external_links:
+     - letsencrypt-nginx
+    environment:
+      - VIRTUAL_HOST=portainer.home.yovi.info
+      - VIRTUAL_PORT=9000
+      - LETSENCRYPT_HOST=portainer.home.yovi.info
+      - LETSENCRYPT_EMAIL=yovio@hotmail.com
+    expose:
+      - "9000"
+    volumes:
+     - "/var/run/docker.sock:/var/run/docker.sock"
+     - "/docker-data/portainer/data:/data"
+
   sgdrone:
     container_name: sgdrone
     image: alpine
