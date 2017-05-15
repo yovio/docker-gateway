@@ -10,7 +10,7 @@ services:
       - bridge-inside
     volumes:
      - "/docker-data/nginx:/etc/nginx/conf.d"
-     - "/docker-data/nginx/vhost.d:/etc/nginx/vhost.d:ro"
+     - "/docker-data/nginx/vhost.d:/etc/nginx/vhost.d"
      - "/etc/nginx/vhost.d"
      - "/usr/share/nginx/html"
      - "/docker-data/nginx/certs:/etc/nginx/certs:ro"

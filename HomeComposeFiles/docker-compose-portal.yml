@@ -77,6 +77,25 @@ services:
       - "80"
     command: /bin/ash
 
+  node-red-proxy:
+    container_name: node-red-proxy
+    image: alpine
+    restart: always
+    networks:
+      - bridge-inside
+    external_links:
+     - letsencrypt-nginx
+    environment:
+      - VIRTUAL_HOST=node-red.home.yovi.info
+      - VIRTUAL_PORT=80
+      - REAL_IP=iotbase.
+      - LETSENCRYPT_HOST=node-red.home.yovi.info
+      - LETSENCRYPT_EMAIL=yovio@hotmail.com
+    tty: true
+    expose:
+      - "80"
+    command: /bin/ash
+
 networks:
   bridge-inside:
     external:
